@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Unwrapped</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <center>
+    <div>
+      <ul>
+        <li><a href="/">Spotify Unwrapped</a></li>
+      </ul>
+      <div class="header">
+        <h2>{{ name }}'s Unwrapped</h2>
+      </div>
+
+      <div id="content-to-download" class="card">
+          <img src="{{ image }}" style="width: 300px; height: 300px;">
+          <div class="row">
+              <div class="column">
+                  <h3>Top Artists</h3>
+                  {% for artist in artists %}
+                      <p>{{ loop.index }}. {{ artist.name }}</p>
+                  {% endfor %}
+              </div>
+              <div class="column">
+                  <h3>Top Songs</h3>
+                  {% for song in songs %}
+                  {% if song.name %}
+                    {% if "(" in song.name %}
+                      {% set song_name = song.name[:song.name.find("(")].strip() %}
+                      <p>{{ loop.index }}. {{ song_name }}</p>
+                    {% else %}
+                      <p>{{ loop.index }}. {{ song.name }}</p>
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+              </div>
+          </div>
+          <div class="row">
+            <div class="column">
+                  <h3>Top Genre</h3>
+                  <p>{{ genre[0].upper() ~ genre[1:] }}</p>
+            </div>
+            <div class="column">
+                <h3>Time Range</h3>
+                {% if range == "long_term" %}
+                  <p>All Time</p>
+                {% elif range == "medium_term" %}
+                  <p>6 Months</p>
+                {% else %}
+                  <p>4 Weeks</p>
+                {% endif %}
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <div class="container">
+    <div>
+      <div class="radio-inputs">
+
+        <label class="radio">
+          <input type="radio" name="radio" value="short_term" checked=""  {% if range == 'medium_term' %}checked{% endif %} onclick="updateContent('short_term')">
+          <span class="name">4 Weeks</span>
+        </label>
+
+        <label class="radio">
+          <input type="radio" name="radio" value="medium_term"  {% if range == 'medium_term' %}checked{% endif %} onclick="updateContent('medium_term')">
+          <span class="name">6 Months</span>
+        </label>
+
+        <label class="radio">
+          <input type="radio" name="radio" value="long_term"  {% if range == 'long_term' %}checked{% endif %} onclick="updateContent('long_term')">
+          <span class="name">All Time</span>
+        </label>
+      </div>
+    </div>
+
+    <div>
+      <button class="colorbutton" id="changeColorButton">
+        Color!
+      </button>
+    </div>
+
+    <div>
+      <a style="--clr: #7808d0" id="downloadCard" class="button resize">
+        <span class="button__icon-wrapper">
+            <svg width="10" class="button__icon-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 15">
+                <path fill="currentColor" d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"></path>
+            </svg>
+            <svg class="button__icon-svg  button__icon-svg--copy" xmlns="http://www.w3.org/2000/svg" width="10" fill="none" viewBox="0 0 14 15">
+                <path fill="currentColor" d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"></path>
+            </svg>
+        </span>
+        Download
+      </a>
+    </div>
+  </center>
+
+<script>
+  function updateContent(timeRange) {
+    window.location.href = `/view?time_range=${timeRange}`;
+  }
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+      const gradients = [
+          'linear-gradient(to right, #00B4DB 0%, #0083B0 100%)',
+          'linear-gradient(to right, #ff5f6d, #ffc371)',
+          'linear-gradient(to right, #6a11cb 0%, #2575fc 100%)',
+          // Room for Expansion
+      ];
+      let currentGradientIndex = 0;
+
+      document.getElementById('changeColorButton').addEventListener('click', function() {
+          const cards = document.querySelectorAll('.card');
+          cards.forEach(function(card) {
+              card.style.background = gradients[currentGradientIndex];
+          });
+          currentGradientIndex = (currentGradientIndex + 1) % gradients.length;
+      });
+  });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('downloadCard').addEventListener('click', function(event) {
+      event.preventDefault();
+      html2canvas(document.querySelector("#content-to-download"), { useCORS: true }).then(canvas => {
+        const image = canvas.toDataURL("image/png");
+        const downloadLink = document.createElement('a');
+        downloadLink.href = image;
+        downloadLink.download = 'Unwrapped.png';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+      });
+    });
+  });
+  </script>
+
+</body>
+</html>
