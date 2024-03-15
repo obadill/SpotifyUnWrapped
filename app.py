@@ -1,12 +1,12 @@
 import spotipy
-import os
+import functions
 import requests
 from functions import configure, create_spotify_oauth, get_token
 from flask import Flask, request, url_for, session, redirect, render_template
 
 app = Flask(__name__)
 app.config["SESSION_COOKIE_NAME"] = "Spotify Cookie"
-app.secret_key = os.getenv("SECRET_KEY")
+app.secret_key = functions.SECRET_KEY
 TOKEN_INFO = "token_info"
 configure()
 

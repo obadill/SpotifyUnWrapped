@@ -4,13 +4,19 @@ from flask import redirect, url_for, session
 from spotipy.oauth2 import SpotifyOAuth
 from dotenv import load_dotenv
 
+
+#API KEYS HERE
+#CLIENT_ID =
+#CLIENT_SECRET =
+#SECRET_KEY =
+
 def configure():
    load_dotenv()
 
 def create_spotify_oauth():
   return SpotifyOAuth(
-        client_id=os.getenv("CLIENT_ID"),
-        client_secret=os.getenv("CLIENT_SECRET"),
+        client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET,
         redirect_uri=url_for("redirectPage", _external=True),
         scope="user-top-read user-library-read"
   )
