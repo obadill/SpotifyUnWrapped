@@ -8,7 +8,6 @@ app = Flask(__name__)
 app.config["SESSION_COOKIE_NAME"] = "Spotify Cookie"
 app.secret_key = os.getenv("SECRET_KEY")
 TOKEN_INFO = "token_info"
-
 configure()
 
 @app.route("/")
@@ -19,11 +18,6 @@ def home():
 def login():
     auth_url = create_spotify_oauth().get_authorize_url()
     return redirect(auth_url)
-
-@app.route("/logout")
-def logout():
-    session[TOKEN_INFO] = "relogin"
-    return redirect("/")
 
 @app.route('/redirectPage')
 def redirectPage():
